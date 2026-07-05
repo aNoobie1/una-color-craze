@@ -29,17 +29,33 @@ CardAPI.ROOT_MODEL = ROOT_MODEL
 
 ---@alias CardColor
 ---| "RED"
+---| "ORANGE"
 ---| "YELLOW"
 ---| "GREEN"
+---| "CYAN"
 ---| "BLUE"
+---| "PURPLE"
+---| "MAGENTA"
+---| "WHITE"
+---| "GREY"
 ---| "BLACK"
 
 local colorUV = {
-	vec( 0, 0), -- RED
-	vec(10, 0), -- YELLOW
-	vec(20, 0), -- GREEN
-	vec(30, 0), -- BLUE
-	vec(40, 0), -- BLACK
+	vec( 0,  0), -- RED
+	vec(10,  0), -- ORANGE
+	vec(20,  0), -- YELLOW
+	vec(30,  0), -- GREEN
+	vec(40,  0), -- CYAN
+	vec(50,  0), -- BLUE
+	vec(60,  0), -- PURPLE
+	vec(70,  0), -- MAGENTA
+	vec( 0, 14), -- REDCYAN
+	vec(10, 14), -- ORANGEBLUE
+	vec(20, 14), -- YELLOWPURPLE
+	vec(30, 14), -- GREENMAGENTA
+	vec(40, 14), -- WHITE
+	vec(50, 14), -- GREY
+	vec(60, 14), -- BLACK
 }
 
 local iconUV = {
@@ -82,9 +98,19 @@ local iconUV = {
 
 local index2color = {
 	"RED",
+	"ORANGE",
 	"YELLOW",
 	"GREEN",
+	"CYAN",
 	"BLUE",
+	"PURPLE",
+	"MAGENTA",
+	"REDCYAN",
+	"ORANGEBLUE",
+	"YELLOWPURPLE",
+	"GREENMAGENTA",
+	"WHITE",
+	"GREY",
 	"BLACK",
 }
 
@@ -168,14 +194,27 @@ function CardAPI.typeToIndex(type)
 end
 
 local randomCardList = {}
-for color = 1, 4 do
+for color = 1, 8 do
 	for cardType = 2, 14 do
 		local id = CardAPI.typeAndColorToFullId(cardType, color)
 		table.insert(randomCardList, id)
 		table.insert(randomCardList, id) -- give higher chance to colorful cards
 	end
-	table.insert(randomCardList, CardAPI.typeAndColorToFullId(15, 5))
-	table.insert(randomCardList, CardAPI.typeAndColorToFullId(16, 5))
+	table.insert(randomCardList, CardAPI.typeAndColorToFullId(12, 13))
+	table.insert(randomCardList, CardAPI.typeAndColorToFullId(13, 13))
+	table.insert(randomCardList, CardAPI.typeAndColorToFullId(14, 13))
+	table.insert(randomCardList, CardAPI.typeAndColorToFullId(15, 15))
+	table.insert(randomCardList, CardAPI.typeAndColorToFullId(16, 15))
+end
+for color = 9, 12 do
+	for cardType = 2, 14 do
+		local id = CardAPI.typeAndColorToFullId(cardType, color)
+		table.insert(randomCardList, id)
+	end
+end
+for cardType = 2, 11 do
+	local id = CardAPI.typeAndColorToFullId(cardType, 14)
+	table.insert(randomCardList, id)
 end
 
 ---@return number
@@ -268,10 +307,16 @@ end
 ---```
 ---
 --- 1 RED  
---- 2 YELLOW  
---- 3 GREEN  
---- 4 BLUE  
---- 5 BLACK  
+--- 2 ORANGE  
+--- 3 YELLOW  
+--- 4 GREEN  
+--- 5 CYAN  
+--- 6 BLUE  
+--- 7 PURPLE
+--- 8 MAGENTA  
+--- 9 WHITE  
+--- 10 GREY  
+--- 11 BLACK  
 ---```
 ---@param color integer
 ---@return Card
@@ -286,8 +331,8 @@ end
 
 ---```
 ---
----1 EMPTY  6 FOUR   11 NINE  16 WILD  
----2 ZERO   7 FIVE   12 REVERSE  17 UNKNOWN
+---1 EMPTY  6 FOUR   11 NINE    16 WILD  
+---2 ZERO   7 FIVE   12 REVERSE 17 UNKNOWN
 ---3 ONE    8 SIX    13 SKIP  
 ---4 TWO    9 SEVEN  14 DRAW2  
 ---5 THREE  10 EIGHT 15 DRAW4  

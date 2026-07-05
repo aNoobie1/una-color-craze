@@ -83,7 +83,7 @@ local sceneIntermission = Macro.new(function (events, ...)
 
 	local startBtn = Card.new()
 		:setTag("joinHud")
-		:setColor(2)
+		:setColor(3)
 		:setType(1)
 		:setLabel(host:isHost() and "Start" or "Join",0.66)
 		:setScale(0,0,0)
@@ -92,7 +92,7 @@ local sceneIntermission = Macro.new(function (events, ...)
 	local settingsBtn = Card.new()
 		:setTag("joinHud")
 		:setLabel("settings",0.33)
-		:setColor(4)
+		:setColor(6)
 		:setType(1)
 		:setPos(0,0,0)
 		:setScale(0,0,0)
@@ -170,7 +170,7 @@ local sceneIntermission = Macro.new(function (events, ...)
 
 			local function updateState(x)
 				Sync.setBitFlag(setting.bit, x)
-				card:setColor(x and 3 or 5)
+				card:setColor(x and 4 or 15)
 			end
 			updateState(Sync.getBitFlag(setting.bit))
 
@@ -206,7 +206,7 @@ local sceneIntermission = Macro.new(function (events, ...)
 			else
 				card = Card.new()
 				card:setTag("playerList")
-					:setColor(5)
+					:setColor(15)
 					:setType(1)
 					:setLabel(players[i],0.66)
 					:setPos(pos)
@@ -510,7 +510,7 @@ local sceneGame = Macro.new(function (events, ...)
 			return
 		end
 		card:setType(17)
-			:setColor(5)
+			:setColor(15)
 	end
 
 	local function reversePlayersOrder()
@@ -535,7 +535,7 @@ local sceneGame = Macro.new(function (events, ...)
 		local card = inv[cardId][#inv[cardId]]
 		local type, color = Card.fullIdToTypeAndColor(cardId)
 		local currentColor = Sync.getColor()
-		if color == 5 and currentColor < 100 then
+		if color == 15 and currentColor < 100 then
 			card:setColor(currentColor)
 		end
 	end
@@ -686,11 +686,93 @@ local sceneGame = Macro.new(function (events, ...)
 		local topCard = cardsStack[#cardsStack]
 		local topType,topColor = Card.fullIdToTypeAndColor(topCard)
 		local cardType,color = Card.fullIdToTypeAndColor(cardId)
+		local cwcolor
+		local ccwcolor
+		local dcolor
+		local dcwcolor
+		local dccwcolor
+		local colorA
+		local cwcolorA
+		local ccwcolorA
+		local colorB
+		local cwcolorB
+		local ccwcolorB
+		if color == 13 or color == 14 or color == 15 then
+			cwcolor = nil
+			ccwcolor = nil
+			dcolor = nil
+			dcwcolor = nil
+			dccwcolor = nil
+			colorA = nil
+			cwcolorA = nil
+			ccwcolorA = nil
+			colorB = nil
+			cwcolorB = nil
+			ccwcolorB = nil
+		elseif color <= 8 then
+			cwcolor = color + 1
+			ccwcolor = color - 1
+			if cwcolor > 8 then
+				cwcolor = 1
+			end
+			if ccwcolor < 1 then
+				ccwcolor = 8
+			end
+			if color <= 4 then
+				dcolor = color + 8
+			else
+				dcolor = color + 4
+			end
+			dcwcolor = dcolor + 1
+			dccwcolor = dcolor - 1
+			if dcwcolor > 12 then
+				dcwcolor = 9
+			end
+			if dccwcolor < 9 then
+				dccwcolor = 12
+			end
+			colorA = nil
+			cwcolorA = nil
+			ccwcolorA = nil
+			colorB = nil
+			cwcolorB = nil
+			ccwcolorB = nil
+		else
+			cwcolor = color + 1
+			ccwcolor = color - 1
+			if cwcolor > 12 then
+				cwcolor = 9
+			end
+			if ccwcolor < 9 then
+				ccwcolor = 12
+			end
+			dcolor = nil
+			dcwcolor = nil
+			dccwcolor = nil
+			colorA = color - 8
+			cwcolorA = colorA + 1
+			ccwcolorA = colorA - 1
+			if ccwcolorA < 1 then
+				ccwcolorA = 8
+			end
+			colorB = color - 4
+			cwcolorB = colorB + 1
+			ccwcolorB = colorB - 1
+			if cwcolorB > 8 then
+				cwcolorB = 1
+			end
+		end
 		local currentColor = Sync.getColor()
 		if currentColor == 254 then
 			return
 		end
-		if not (color == 5 or color == currentColor or topType == cardType) then
+		if not (color == 15 or
+		((color == currentColor and color ~= 14) or cwcolor == currentColor or ccwcolor == currentColor) or 
+		(dcolor == currentColor or dcwcolor == currentColor or dccwcolor == currentColor) or 
+		(colorA == currentColor or cwcolorA == currentColor or ccwcolorA == currentColor or 
+		colorB == currentColor or cwcolorB == currentColor or ccwcolorB == currentColor) or 
+		(currentColor == 13 and color ~= 14) or (color == 13 and currentColor ~= 14) or
+		topType == cardType) then
 			return
 		end
 		local drawCards = 0
@@ -726,7 +808,7 @@ local sceneGame = Macro.new(function (events, ...)
 				reversePlayersOrder()
 			end
 		end
-		if color == 5 then
+		if color == 15 then
 			Sync.setColor(254)
 		else
 			Sync.setColor(color)
@@ -750,7 +832,7 @@ local sceneGame = Macro.new(function (events, ...)
 		card:setPos(-1, 0.323, 0)
 			:setRot(0, 0, 180)
 			:setType(17)
-			:setColor(5)
+			:setColor(15)
 			:setTag("gameCard")
 			:setId("card;;-1")
 
@@ -815,7 +897,7 @@ local sceneGame = Macro.new(function (events, ...)
 	local function hasAnyCardsCheck()
 		local currentPlayer = Sync.getCurrentPlayer()
 		local currentColor = Sync.getColor()
-		local isSpecialColor = currentColor == 5 or currentColor == 254
+		local isSpecialColor = currentColor == 15 or currentColor == 254
 		for _, name in pairs(Sync.getPlayersOrder()) do
 			if #Sync.getRawCards(name) == 0 then
 				if currentPlayer ~= name or not isSpecialColor then
@@ -1116,9 +1198,9 @@ local sceneGame = Macro.new(function (events, ...)
 		if color ~= 254 then
 			return
 		end
-		for i = 1, 4 do
+		for i = 1, 8 do
 			local x = i % 2 - 0.5
-			local y = math.floor((i - 1) / 2) - 0.5
+			local y = math.floor((i - 1) / 2) - 1.5
 			local scale = 0.5
 			local card = Card.new()
 			local height = cardStackHeight + 0.1
@@ -1176,7 +1258,7 @@ local sceneGame = Macro.new(function (events, ...)
 	end, "gameDrawCardsCountChange")
 
 	if host:isHost() then
-		local color = math.random(1, 4)
+		local color = math.random(1, 8)
 		local cardType = math.random(2, 11)
 		Sync.drawCard(
 			"!",
@@ -1238,8 +1320,8 @@ local sceneGame = Macro.new(function (events, ...)
 			for k = 1, 7, 1 do
 				Sync.drawCard(name, Card.getRandomCard())
 			end
-			-- Sync.drawCard(name, Card.typeAndColorToFullId(15, 5))
-			-- Sync.drawCard(name, Card.typeAndColorToFullId(14, 5))
+			-- Sync.drawCard(name, Card.typeAndColorToFullId(15, 7))
+			-- Sync.drawCard(name, Card.typeAndColorToFullId(14, 7))
 		end
 	end
 
@@ -1495,7 +1577,7 @@ if host:isHost() then
 
 	local setMode
 
-	action:setTexture(textures["una.atlas"], 48, 48, 16, 16, 1.5)
+	action:setTexture(textures["una.atlas"], 48, 62, 16, 16, 1.5)
 
 	local function playGame()
 		Game.placeOnTargetedBlock()
