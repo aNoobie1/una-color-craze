@@ -58,10 +58,10 @@ Grey cards are more accurately described as 'colorless'. They have only numbered
 
 ### 1.0
 
-Initial Release
+* Initial Release
 
 ### 1.1
 
-(backend) Optimized drop code to use a few less variables
-(gameplay) Added host setting to allow grey cards to be played on themselves
-(visual) made settings cards loop over into more rows, with three to a row
+* (backend) Optimized drop code to use a few less variables
+* (gameplay) Added host setting to allow grey cards to be played on themselves
+* (visual) made settings cards loop over into more rows, with three to a row
