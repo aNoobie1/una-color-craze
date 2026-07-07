@@ -59,6 +59,7 @@ local gameSettings = {
 	{name = "+2 on +4\nstacking", bit = 0, default = true},
 	{name = "+4 on +2\nstacking", bit = 1, default = true},
 	{name = "require\nplaying\ndrawed\ncard", bit = 2, default = true},
+	{name = "allow\nplaying\ngrey on\ngrey", bit = 3, default = false},
 }
 
 --[[
@@ -163,7 +164,9 @@ local sceneIntermission = Macro.new(function (events, ...)
 			local card = Card.new()
 			animateSettingsCard(card, true)
 			settingsCards[i] = card
-			card:setPos(1 - i, 0, 0)
+			local xpos = 1 - (i % 3)
+			local zpos = math.floor(i/3)
+			card:setPos(xpos, 0, -zpos)
 				:setLabel(setting.name, 0.33)
 				:setType(1)
 				:setOwner(hostName)
@@ -688,9 +691,6 @@ local sceneGame = Macro.new(function (events, ...)
 		local cardType,color = Card.fullIdToTypeAndColor(cardId)
 		local cwcolor
 		local ccwcolor
-		local dcolor
-		local dcwcolor
-		local dccwcolor
 		local colorA
 		local cwcolorA
 		local ccwcolorA
@@ -700,9 +700,6 @@ local sceneGame = Macro.new(function (events, ...)
 		if color == 13 or color == 14 or color == 15 then
 			cwcolor = nil
 			ccwcolor = nil
-			dcolor = nil
-			dcwcolor = nil
-			dccwcolor = nil
 			colorA = nil
 			cwcolorA = nil
 			ccwcolorA = nil
@@ -719,21 +716,18 @@ local sceneGame = Macro.new(function (events, ...)
 				ccwcolor = 8
 			end
 			if color <= 4 then
-				dcolor = color + 8
+				colorA = color + 8
 			else
-				dcolor = color + 4
+				colorA = color + 4
 			end
-			dcwcolor = dcolor + 1
-			dccwcolor = dcolor - 1
-			if dcwcolor > 12 then
-				dcwcolor = 9
+			cwcolorA = colorA + 1
+			ccwcolorA = colorA - 1
+			if cwcolorA > 12 then
+				cwcolorA = 9
 			end
-			if dccwcolor < 9 then
-				dccwcolor = 12
+			if ccwcolorA < 9 then
+				ccwcolorA = 12
 			end
-			colorA = nil
-			cwcolorA = nil
-			ccwcolorA = nil
 			colorB = nil
 			cwcolorB = nil
 			ccwcolorB = nil
@@ -746,9 +740,6 @@ local sceneGame = Macro.new(function (events, ...)
 			if ccwcolor < 9 then
 				ccwcolor = 12
 			end
-			dcolor = nil
-			dcwcolor = nil
-			dccwcolor = nil
 			colorA = color - 8
 			cwcolorA = colorA + 1
 			ccwcolorA = colorA - 1
@@ -767,8 +758,7 @@ local sceneGame = Macro.new(function (events, ...)
 			return
 		end
 		if not (color == 15 or
-		((color == currentColor and color ~= 14) or cwcolor == currentColor or ccwcolor == currentColor) or 
-		(dcolor == currentColor or dcwcolor == currentColor or dccwcolor == currentColor) or 
+		((color == currentColor and not (color == 14 and not Sync.getBitFlag(3))) or cwcolor == currentColor or ccwcolor == currentColor) or 
 		(colorA == currentColor or cwcolorA == currentColor or ccwcolorA == currentColor or 
 		colorB == currentColor or cwcolorB == currentColor or ccwcolorB == currentColor) or 
 		(currentColor == 13 and color ~= 14) or (color == 13 and currentColor ~= 14) or

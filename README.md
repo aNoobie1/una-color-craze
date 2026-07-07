@@ -48,4 +48,20 @@ White cards are unique. They have no numbers, only the symbols of the normal car
 
 ## Grey Cards
 
-Grey cards are more accurately described as 'colorless'. They have only numbered variants and cannot be played on any color, including themselves; nor can any color be played on them besides Wild, meaning you have to match the symbol. If you have this card, it'd be best to play it the moment you get the opportunity.
+Grey cards are more accurately described as 'colorless'. They have only numbered variants and cannot be played on any color, including themselves (this is a toggleable setting as of version 1.1); nor can any color be played on them besides Wild, meaning you have to match the symbol. If you have this card, it'd be best to play it the moment you get the opportunity.
+
+## New Host Settings
+
+* allow playing grey on grey
+
+## Color Craze Changelogs
+
+### 1.0
+
+Initial Release
+
+### 1.1
+
+(backend) Optimized drop code to use a few less variables
+(gameplay) Added host setting to allow grey cards to be played on themselves
+(visual) made settings cards loop over into more rows, with three to a row
